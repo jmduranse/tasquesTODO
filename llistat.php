@@ -45,6 +45,8 @@ if (isset($_SESSION['user'])) {  //entramos estando logueados
 
         echo "<h2>Usuari $user ($rol)</h2>"; ?>
 
+
+        <!--tabla con lista de tasques-->
         <table>
             <thead>
                 <th>Nom Tasca</th>
@@ -54,12 +56,12 @@ if (isset($_SESSION['user'])) {  //entramos estando logueados
             </thead>
 
             <?php
-            //obtenemos informacion de la lista de tareas usando una query
+            //obtenemos informacion de la lista de tareas del usuario que este logueado usando una query
 
             $user = $_SESSION["user"];
             $dataBase = new SQLite3("tasques_todo.db");
             $query = $dataBase->query("SELECT id,nom,descripcio,estat,comentaris FROM TODO WHERE creator = '$user';");
-
+            //recuperamos id para identificar la tasca de forma unica
 
             while ($arrayquery = $query->fetchArray()) {
 
@@ -99,30 +101,9 @@ if (isset($_SESSION['user'])) {  //entramos estando logueados
         <TABLE>
             <TR>
                 <TD>
-                    < <!--formulario para gestion de usuarios-->
-                        <FORM method="POST" action=creaTasca.php>
-                            <INPUT type="submit" value="Crear nova tasca">
-
-                        </FORM>
-                </TD>
-
-                <TD>
-                    <!--formulario oculto para cerrar sesion-->
-                    <FORM method="POST" action=login.php>
-                        <INPUT type="submit" value="Sortir">
-                        <INPUT type="hidden" name="action" value="logout">
-                </TD>
-            </TR>
-        </TABLE>
-
-
-        <HR>
-        <TABLE>
-            <TR>
-                <TD> <!--ESTA PARTE COMO ADMIN SOLO-->
-                    <!--formulario oculto para gestion de usuarios-->
-                    <FORM method="POST" action=gestUsuaris.php>
-                        <INPUT type="submit" value="Gestió de usuaris">
+                    <!--formulario para crear tasca-->
+                    <FORM method="POST" action=creaTasca.php>
+                        <INPUT type="submit" value="Crear nova tasca">
 
                     </FORM>
                 </TD>
@@ -132,19 +113,29 @@ if (isset($_SESSION['user'])) {  //entramos estando logueados
                     <FORM method="POST" action=login.php>
                         <INPUT type="submit" value="Sortir">
                         <INPUT type="hidden" name="action" value="logout">
+                    </FORM>
                 </TD>
             </TR>
         </TABLE>
 
 
+        <HR>
 
+    <?php
 
-    </BODY>
+    if ($_SESSION['rol'] == 1) { //generamos boton de gestion de usuarios solo si estamos logueados como admin
 
-    </HTML>
+        echo '<!--ESTA PARTE COMO ADMIN SOLO-->
+            <!--formulario oculto para gestion de usuarios-->
+            <p>Gestió usuaris admin</p>
+            <FORM method="POST" action=gestUsuaris.php>
+                <INPUT type="submit" value="Gestió de usuaris">
 
-<?php
+            </FORM></BODY></HTML>';
+    } else {
 
+        echo '</BODY></HTML>';
+    }
 } else { //no estamos logueados
 
     echo "<h3>ERROR: no hi ha usuari.</h3>";
@@ -152,3 +143,4 @@ if (isset($_SESSION['user'])) {  //entramos estando logueados
 
 
 }
+    ?>

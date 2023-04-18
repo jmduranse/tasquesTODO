@@ -5,7 +5,7 @@ if (isset($_POST['nom'])) {  //llegamos tras haber apretado boton en este mismo 
 
     //escribimos en base de datos 
 
-    print_r($_POST);
+
 
     $id = $_POST['id'];
     $nom = $_POST['nom'];
@@ -13,16 +13,12 @@ if (isset($_POST['nom'])) {  //llegamos tras haber apretado boton en este mismo 
     $estat = $_POST['estat'];
     $comentaris = $_POST['comentaris'];
 
-    echo "id  $id<BR>";
-    echo "nom  $nom<BR>";
-    echo "estat  $estat<BR>";
-    echo "comentaris $comentaris<BR>";
 
     $dataBase = new SQLite3("tasques_todo.db");
     $dataBase->exec('BEGIN');
 
     //Modificamos los valores del regustro
-    if ($dataBase->exec("UPDATE TODO SET nom = '$nom',descripcio = '$descipcio', estat = '$estat', comentaris='$comentaris' WHERE id='$id';")) {
+    if ($dataBase->exec("UPDATE TODO SET nom = '$nom',descripcio = '$descripcio', estat = '$estat', comentaris='$comentaris' WHERE id='$id';")) {
 
         echo "S'ha modificat la tasca amb èxit.</br>";
     } else { //S'ha pogut obrir la base de dades
@@ -32,12 +28,14 @@ if (isset($_POST['nom'])) {  //llegamos tras haber apretado boton en este mismo 
 
     $dataBase->exec('COMMIT');
     $dataBase->close();
+
+    header('refresh:5;llistat.php'); //Tornem a l'inici
+
 } else {  //si solo tenemos id hemos llegado desde el formulario de lista
 
-    //if (isset($_POST['id']) & (!isset($_POST['name'])))
-    $id = $_POST['id'];
 
-    echo "id $id";
+
+    $id = $_POST['id'];
 
     $dataBase = new SQLite3("tasques_todo.db");
     $dataBase->exec('BEGIN');
@@ -50,9 +48,6 @@ if (isset($_POST['nom'])) {  //llegamos tras haber apretado boton en este mismo 
 
     $dataBase->exec('COMMIT');
     $dataBase->close();
-
-
-
 
 ?>
 
@@ -92,11 +87,12 @@ que hemos obtenido antes -->
                 </tr>
                 <tr>
                     <td>Comentaris:</td>
-                    <td><textarea name="comentaris" <?php echo $arrayquery['comentaris']; ?> rows="5" cols="21"></textarea></td>
+                    <td><textarea name="comentaris" rows="5" cols="21"> <?php echo $arrayquery['comentaris']; ?></textarea></td>
                 </tr>
                 <tr>
                     <td><INPUT type=submit value="Insertar"><br></td>
-                    <td></td>
+                    <INPUT type="hidden" name="id" value="<?php echo $arrayquery["id"]; ?>">
+
                 </tr>
             </table>
         </FORM>

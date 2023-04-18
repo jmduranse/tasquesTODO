@@ -51,20 +51,52 @@ if ($_POST['action'] == 'login') {
 ?>
     <!DOCTYPE html>
 
-    <html ANG='ES'>
+    <html>
+
 
     <head>
         <title>Autenticació</title>
         <meta charset="UTF-8" />
+
+        <style>
+            h1 {
+                text-align: center;
+                color: red;
+                font-size: 40px;
+            }
+
+
+            html,
+            body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+            }
+
+            body {
+                display: flex;
+            }
+
+            form {
+                margin: auto;
+
+            }
+        </style>
+
+
     </head>
 
     <body>
+
+
         <form action="login.php" method="post">
-            <p>Usuari: <input type="text" name="user" /></p>
-            <p>Contrasenya: <input type="password" name="password" /></p>
+            <h1 style="text-align: center"> Tasques TO-DO </h1>
+            <p>Usuari: <input required type="text" name="user" /></p>
+            <p>Contrasenya: <input required type="password" name="password" /></p>
             <p><input type="submit" value="Accedir" /></p>
             <input type="hidden" name="action" value="login">
         </form>
+
     </body>
 
     </html>

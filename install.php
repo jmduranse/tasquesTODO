@@ -1,26 +1,27 @@
 <?php
 echo "<!DOCTYPE html><HTML LANG='ES'><head><meta charset='utf-8' /><title>Formulari instal.lació DB</title></head><body>";
 
-/*function generateRandomString($length = 3)
-{
-    $characters = 'abcdefghijklmnopqrstuvwxyz';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[random_int(0, $charactersLength - 1)];
-    }
-    return $randomString;
-} */
+if (!isset($_POST["action"])) {  //venimos de nuevas. enseñar botones
+?>
+    <p>Boto per crear les taules de la base de dades</p>
+    <FORM method="POST" action=install.php>
+        <INPUT type="submit" value="Crear base de dades"> <!--boton para crear estructura de base de datos-->
+        <INPUT type="hidden" name="action" value="create"> <!--formulario oculto que envia nombre de la acción-->
+    </FORM>
+    <BR>
+    <BR>
+    <BR>
+    <p>Boto per esborrar les taules de la base de dades</p>
+    <FORM method="POST" action=install.php>
+        <INPUT type="submit" value="Esborrar base de dades"> <!--boton para borrar estructura de base de datos-->
+        <INPUT type="hidden" name="action" value="delete"> <!--formulario oculto que envia nombre de la acción-->
+    </FORM>
+    </body>
+
+    </html>
 
 
-// Echo the random string.
-// Optionally, you can give it a desired string length.
-//echo generateRandomString();
-
-
-if (!isset($_POST["action"])) {
-
-    //venimos de nuevas. No hacer nada
+<?php
 
 } else {  //venimos de haber pulsado un boton
 
@@ -62,17 +63,8 @@ if (!isset($_POST["action"])) {
     } else if ($_POST["action"] == "delete") {
 
         $dataBase = new SQLite3("tasques_todo.db");
+        $userTable = 'users'; //herencia de cuando usaba prefijo
 
-        /*
-        $tablesquery = $dataBase->query("SELECT name FROM sqlite_master WHERE type='table';");
-
-        while ($table = $tablesquery->fetchArray()) {
-                if (str_ends_with($table['name'], '_user')) {
-                $userTable = $table['name'];
-                echo "tabla de usuarios era " . $userTable . "<BR>";
-            }
-        }
-        */
 
         if (($dataBase->exec("DROP TABLE TODO")) & ($dataBase->exec("DROP TABLE $userTable"))) {
             echo "Les taules s'han eliminat.";
@@ -82,23 +74,7 @@ if (!isset($_POST["action"])) {
         $dataBase->close(); //Tanquem la base de dades*/
     }
 }
-?>
-
-<FORM method="POST" action=install.php>
-    <INPUT type="submit" value="Crear base de dades"> <!--boton para crear estructura de base de datos-->
-    <INPUT type="hidden" name="action" value="create"> <!--formulario oculto que envia nombre de la acción-->
-</FORM>
-<BR>
-<BR>
-<BR>
-<FORM method="POST" action=install.php>
-    <INPUT type="submit" value="Esborrar base de dades"> <!--boton para borrar estructura de base de datos-->
-    <INPUT type="hidden" name="action" value="delete"> <!--formulario oculto que envia nombre de la acción-->
-</FORM>
-
-<?php
 
 
 
-echo "</body></html>";
 ?>

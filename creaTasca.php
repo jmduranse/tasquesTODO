@@ -47,8 +47,8 @@ if (isset($_SESSION['user'])) {  //si tenemos sesion con usuario
                         <td><textarea name="comentaris" rows="5" cols="21"></textarea></td>
                     </tr>
                     <tr>
-                        <td><INPUT type=submit value="Insertar"><br></td>
-                        <td></td>
+                        <td><INPUT type=submit value="Insertar"></td>
+
                     </tr>
                 </table>
             </FORM>
