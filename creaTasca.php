@@ -64,7 +64,6 @@ if (isset($_SESSION['user'])) {  //si tenemos sesion con usuario
 
     } else {  //si recibimos post, hacemos la insercion en base de datos. Venimos de esta misma pagina apretando botón
 
-        //escribimos en base de datos 
 
         //recupero variables desde $_POST y $_SESSION
 
@@ -79,9 +78,20 @@ if (isset($_SESSION['user'])) {  //si tenemos sesion con usuario
         $dataBase = new SQLite3("tasques_todo.db");
         $dataBase->exec('BEGIN');
 
+        //sanitizamos entrada
 
-        //Insertamos los valores. id es automatico y se autoincrementa
-        if ($dataBase->exec("INSERT INTO  TODO (creator,nom,descripcio,estat,comentaris) VALUES ('$creator','$nom','$descripcio','$estat','$comentaris')")) {
+        $query = $dataBase->prepare("INSERT INTO TODO (creator, nom, descripcio, estat, comentaris) VALUES (?, ?, ?, ?, ?)");
+        $query->bindParam(1, $creator);
+        $query->bindParam(2, $nom);
+        $query->bindParam(3, $descripcio);
+        $query->bindParam(4, $estat);
+        $query->bindParam(5, $comentaris);
+
+
+
+
+        //Insertamos los valores. campo de tabla id es automatico y se autoincrementa
+        if ($query->execute()) {
 
             echo "S'ha inserit la tasca amb èxit.</br>";
         } else { //S'ha pogut obrir la base de dades

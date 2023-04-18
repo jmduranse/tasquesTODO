@@ -11,15 +11,20 @@ if ($_POST['action'] == 'login') {
     $dataBase = new SQLite3("tasques_todo.db");
 
     //Fem la consulta. A la variable $resultat, guardarem un objecte de la classe SQLite3Result
-    $query = $dataBase->query("SELECT password,admin FROM users WHERE nom = '$user';");
+    //sanitizamos entrada
 
-    $arrayquery = $query->fetchArray(); //debe ser unico array
+    $query = $dataBase->prepare("SELECT password,admin FROM users WHERE nom = ?;");
+    $query->bindParam(1, $user);
+    $result = $query->execute();
 
-    $hash = $arrayquery["password"];
+    $arrayquery = $result->fetchArray(); //debe ser unico array no hace falta iterar
+
+
+    $hash = $arrayquery["password"]; //recuperamos hash del password desde la db para comparar
 
 
     if ($arrayquery != null & (password_verify($password, $hash))) { //user existe y el hash del password dado coincide con el almacenado
-        //porque no puedo poner arrayquery directamente?
+
 
         session_start();
 

@@ -68,7 +68,11 @@ if (isset($_SESSION['user']) & ($_SESSION['rol']) == 1) {  //si tenemos sesion c
         $check = 'ok'; // indicador para comprobar entrada de datos
 
         $dataBase = new SQLite3("tasques_todo.db");
-        $prevuser = $dataBase->query("select * FROM users WHERE nom = '$user'");  //comprobamos que no existen usuarios previos llamados igual
+
+
+        $query = $dataBase->prepare("select * FROM users WHERE nom = ?");  //comprobamos que no existen usuarios previos llamados igual
+        $query->bindParam(1, $user);
+        $prevuser = $query->execute();
 
 
         if ($prevuser->fetchArray()) {  //si hay mas usuarios con ese nombre
@@ -105,9 +109,19 @@ if (isset($_SESSION['user']) & ($_SESSION['rol']) == 1) {  //si tenemos sesion c
 
             $dataBase->exec('BEGIN');
 
+            //sanitizamos entrada
+
+            $query = $dataBase->prepare("INSERT INTO users (nom, password, admin) VALUES (?, ?, ?)");
+
+            $query->bindParam(1, $user);
+            $query->bindParam(2, $hashedPassword);
+            $query->bindParam(3, $admin);
+
 
             //Insertamos los valores. 
-            if ($dataBase->exec("INSERT INTO users (nom,password,admin) VALUES ('$user','$hashedPassword','$admin')")) {
+
+            if ($query->execute()) {
+
                 //inserccion exitosa
                 echo "S'ha creat l'usuari amb èxit.</br>";
             } else { //fallo

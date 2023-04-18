@@ -19,17 +19,31 @@
 
         $user = $_POST['user'];
         $dataBase = new SQLite3("tasques_todo.db");
-        $dataBase->exec('BEGIN');
+
 
         if ($user == 'admin') {
 
             echo "User admin no es pot esborrar<br>";  //al menos tener siempre un usuario admin
+            $dataBase->close();
             header('refresh:5;gestUsuaris.php'); //Tornem a llistat
 
         } else {
 
+
+
+
+            $dataBase->exec('BEGIN');
+
+            $query1 = $dataBase->prepare("DELETE FROM TODO WHERE creator = ?");
+            $query1->bindValue(1, $user, PDO::PARAM_STR);
+
+
+            $query2 = $dataBase->prepare("DELETE FROM users WHERE nom = ?");
+            $query2->bindValue(1, $user, PDO::PARAM_STR);
+
+
             //Elimamos usuario y tascas asociadas
-            if (($dataBase->exec("DELETE FROM TODO WHERE creator = '$user'")) & ($dataBase->exec("DELETE FROM users WHERE nom = '$user'"))) {
+            if (($query1->execute()) & ($query2->execute())) {
                 //S'ha pogut obrir la base de dades. Borramos usuario y ademas borramos tascas asociadas
 
                 echo "S'ha esborrat l'usuari amb èxit.</br>";

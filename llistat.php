@@ -123,7 +123,7 @@ if (isset($_SESSION['user'])) {  //entramos estando logueados
 
     <?php
 
-    if ($_SESSION['rol'] == 1) { //generamos boton de gestion de usuarios solo si estamos logueados como admin
+    if ($rol == 'admin') { //generamos boton de gestion de usuarios solo si estamos logueados como admin
 
         echo '<!--ESTA PARTE COMO ADMIN SOLO-->
             <!--formulario oculto para gestion de usuarios-->

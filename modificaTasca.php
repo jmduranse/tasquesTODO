@@ -17,8 +17,21 @@ if (isset($_POST['nom'])) {  //llegamos tras haber apretado boton en este mismo 
     $dataBase = new SQLite3("tasques_todo.db");
     $dataBase->exec('BEGIN');
 
-    //Modificamos los valores del regustro
-    if ($dataBase->exec("UPDATE TODO SET nom = '$nom',descripcio = '$descripcio', estat = '$estat', comentaris='$comentaris' WHERE id='$id';")) {
+    //Modificamos los valores del registro
+
+    //sanitizamos entrada primero
+
+    $query = $dataBase->prepare("UPDATE TODO SET nom = ?, descripcio = ?, estat = ?, comentaris = ? WHERE id = ? and creator = ?");
+    $query->bindValue(1, $nom);
+    $query->bindValue(2, $descripcio);
+    $query->bindValue(3, $estat);
+    $query->bindValue(4, $comentaris);
+    $query->bindValue(5, $id);
+    $query->bindValue(6, $_SESSION['user']);
+
+
+
+    if ($query->execute()) {
 
         echo "S'ha modificat la tasca amb èxit.</br>";
     } else { //S'ha pogut obrir la base de dades
@@ -41,9 +54,14 @@ if (isset($_POST['nom'])) {  //llegamos tras haber apretado boton en este mismo 
     $dataBase->exec('BEGIN');
 
     //Recupero valores basados en id
-    $query = $dataBase->query("SELECT id,nom,descripcio,estat,comentaris FROM TODO WHERE id = '$id';");
+    //sanitizo entrada ya que la id me viene a traves de post y formulario HTML
 
-    $arrayquery = $query->fetchArray(); //solo deberia haber uno (id único)
+    $query = $dataBase->prepare("SELECT id,nom,descripcio,estat,comentaris FROM TODO WHERE id = ? and creator = ?;");
+    $query->bindValue(1, $id);
+    $query->bindValue(2, $_SESSION['user']);
+    $result = $query->execute();
+
+    $arrayquery = $result->fetchArray(); //solo deberia haber uno (id único)
 
 
     $dataBase->exec('COMMIT');

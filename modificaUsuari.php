@@ -38,8 +38,15 @@ if ($_POST['action'] == 'update') {  //llegamos tras haber apretado boton en est
         $dataBase = new SQLite3("tasques_todo.db");
         $dataBase->exec('BEGIN');
 
+
+        //sanitizamos entrada
+        $query = $dataBase->prepare("UPDATE users SET password = ?, admin = ? WHERE nom = ?");
+        $query->bindValue(1, $hashedPassword);  //no haria falta sanitizar el hash en principio
+        $query->bindValue(2, $admin);
+        $query->bindValue(3, $user);
+
         //Insertamos los valores. 
-        if ($dataBase->exec("UPDATE users SET password='$hashedPassword',admin='$admin' WHERE nom = '$user';")) {
+        if ($query->execute()) {
             //insercion exitosa
             echo "S'ha modificat l'usuari amb èxit.</br>";
         } else { //fallo

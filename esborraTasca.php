@@ -13,18 +13,7 @@
 
     <?php
 
-    if (isset($_SESSION['user']) & (isset($_POST['id']))) { //si tenemos sesion con usuario y venimos llistat
-
-        /*recibimos la id de la tasca por POST. */
-        //checkear id?
-        /*
-
-        if (isset($_SESSION['user'])) { 
-        $id = isset($_POST['id']) ? $_POST['id'] : null; // validate and sanitize the input
-        if (!$id) {
-        echo "Error: Invalid input.";
-        exit;
-        }*/
+    if (isset($_SESSION['user']) & (isset($_POST['id']))) { //si tenemos sesion con usuario y venimos  de llistat
 
 
         $id = $_POST['id'];
@@ -32,9 +21,15 @@
         $dataBase->exec('BEGIN');
 
 
-
         //Eliminem tasca x id
-        if ($dataBase->exec("DELETE FROM TODO WHERE id = '$id'")) { //S'ha pogut obrir la base de dades
+        //sanitizamos porque la id viene de un formulario html
+
+        $query = $dataBase->prepare("DELETE FROM TODO WHERE id = ? and creator = ?;");
+        $query->bindValue(1, $id);
+        $query->bindValue(2, $_SESSION['user']);
+
+
+        if ($query->execute()) { //S'ha pogut obrir la base de dades
 
             echo "S'ha esborrat la tasca amb èxit.</br>";
         } else {
